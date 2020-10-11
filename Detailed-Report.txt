@@ -1,0 +1,108 @@
+Apriori-Algorithm:
+----------------------------
+Implemented Apriori by taking the advantages of hash tree so i can calculate my support count by doing only one pass 
+for a single transaction over my hash tree.
+ 
+Potentially Frequent item set generation optimisation:
+1. To make sure, my items in frequent itemsets of size (K-1) to collect the all potential frequent itemsets of size K, 
+   should be in the ascending order that's why i have used set datastructure which take only log(n) time to insert a 
+   element in the ascending order and set datastructutre will also help me to remove duplicate items in one transaction. 
+   this log(n) extra time is negligible even for the huge data.
+2. I have also done Pruning to minimise my all potential frequen itemsets to check. 
+
+Hash-Tree Optimisation:
+1. Used array of set<set<int>> type(set<set<int>> leaf[max_node];) to store the leaves as the frequent itemset while make 
+   sure my itemsets should be in the ascending order.
+2. At the time of passing the transaction over the hash tree so when i am strike to the leaf than i have to make subset 
+   of all the item set of that particular leafnode size for that i have implemented generate_set function. That will only work 
+   over the remaining key those are left from the hashing.
+   Ex. suppose {1 2 3 4 5 6} is a trasaction and i am looking for the size of 4 item set, and i am strike to the leaves after doing hashing
+       over two keys than i will only make subset of {3,4,5,6} of size 2 (4-hashing leaves) and will merge them wiht {1,2} and will search in my
+       hash tree for support count.
+
+*************************************************************************************************************************************************
+
+Fp-Growth:
+--------------------------
+I have used datastructures wisely not only to optimise my time complexcity also the space complexity as well.
+
+Fp-Tree Node (Datastructures used):
+1. I have used Vector<node*> child (a vector type) to reduce my space complexity if i am getting any new child i will push back directly.
+2. I have also used a map (map<int, int> childposition ) that will store my child value corresponding to there childposition in my vector.
+   so at the time of insertion of a transaction i can directly check if i am having any child correspoind to the value or i have to push a new node in my
+   vector in only O(1) time complexity instead to iterating over whole vector, and can get directly approach the node by getting the position from the map
+   second value (vector position of node child).
+3. Also have used parent pointer as we know we have to iterate my fptree in bottom-up manner . this parent pointer will help.
+
+Instead of using the linkedlist represenation to link all the pointers corresponding to the itemsets, i have used position array of vector<node*> type (vector<node*> position[max_nodevalue+1])
+so without iteratig all the itemsets i can dirctly get the positions and can pass through the function directly. Also used the supporder() to store the items in order to their occurence in dataset.
+
+Conditional Fp-Tree Optimisation:
+I have implemented the function(collect_all()), who can directly count the support of the all the items using parent pointer.
+i need not have to implement the Conditional Fp-Tree for all itemsets. So it is reduce my time complexity very much and use of set 
+and map alwyas helpfull in the manner of search and sorting.
+********************************************************************************************************************************************************
+
+Eclat-Algorithm:
+-------------------------
+Ootimisation:
+1.Represented in vertical datset format.
+2.Pruning to reduce the potential fequent itemset to check;
+3. used set to make sure my itemsets always are in 
+3.Used the previous set (k-1) intersection results to count the support for my Size K itemsets.
+
+***********************************************************************************************************************************************************
+
+Dataset-Generation:
+-------------------------
+1.Using the random number generation to store the items corresponding to each transaction.
+2.For the more randomisation and to manage the avgwidth i am using my randam number generation 
+  function with the strict constraints to get the number of items in the one transaction in random 
+  fashion by managing the avg width.
+Algo-
+suppose i want to make my dataset with 200 items , number of transactions 10000, avg-width 5.6 . i can set manually in my code 
+that in what intervals of number of transactions i want to manage avg width. suppose my interval is 10 and according to the avg width in these
+10 lines i need total 56 items (10*56). and again my random generation function will decide the number of items in each transaction of this 10s interval with constraint that 
+the total number of item in my transaction of thses 10 lines will remain exact 56.
+
+*****************************************************************************************************************************************************************
+Dataset Comparison:
+-----------------------
+Dataset1:
+Totaltransaction=100000
+Avg-Width=10.1
+Total_items=870
+-----------------------
+Dataset2:
+Totaltransaction=100000
+Avg-Width=10.1
+Total_items=870
+-----------------------
+Dataset3:
+Totaltransaction=88162
+Avg-Width=10.3056
+Total_items=16470
+-------------------
+Dataset4:
+Totaltransaction=17028
+Avg-Width=4.089
+Total_items=867
+-----------------------
+Comparison:
+------------
+As we can see Dataset{1,2,4} had the total transaction very much greater than the number of element. So to check the item set manually 
+for the support count will be very efficient thats why my Fp-Growth algorithm will take lesser time in comparison of apriori and Eclat
+as we can see also for eclat we have to take intersection for transactions and in apriori we have to pass each transactions over hashtree they are slower.
+----------
+For the Dataset-3 total number of items are greater than the number of transaction in this case it is bad in terms of time complexity to check each itemset manually
+instead of doing this we can easily take intersection of two transactions as number of transactions are less. 
+so in this case my Eclat and apriori will work in lesser time.
+also i will not we able to get more compact fp-tree data structure so Fp-growth will take some more time to compute the support count.
+
+comparison graph are there in the folder.
+-----------------------------------------------------------------------------------------
+****************************************************************************************************************************************************
+
+
+
+
